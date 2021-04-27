@@ -9,17 +9,17 @@ die() {
 cleanup() {
   rm -f "$tmpfile"
 }
-trap cleanup  EXIT INT QUIT TERM
+trap cleanup EXIT INT QUIT TERM
 
 # Run older ld (pseudo condition)
 
-if [ "$#" == "0" ];  then
+if [ "$#" == "0" ]; then
   profile=default
-elif [ "$#" == "1"  ]; then
+elif [ "$#" == "1" ]; then
   profile=$1
 else
   die "usage $0 [profile]"
-fi;
+fi
 
 extract_cookies() {
   if [ "$#" -ge 1 ]; then
@@ -27,7 +27,7 @@ extract_cookies() {
   else
     if tty -s; then
       sqlfile=$(ls -t ~/.mozilla/firefox/*/cookies.sqlite | head -1)
-      sqlfile="-"     # Will use 'cat' below to read stdin
+      sqlfile="-" # Will use 'cat' below to read stdin
     fi
   fi
 
@@ -37,13 +37,13 @@ extract_cookies() {
   fi
 
   # We have to copy cookies.sqlite, because FireFox has a lock on it
-  cat "$sqlfile" >> $tmpfile
+  cat "$sqlfile" >>"$tmpfile"
 
   # This is the format of the sqlite database:
   # CREATE TABLE moz_cookies (id INTEGER PRIMARY KEY, name TEXT, value TEXT, host TEXT, path TEXT,expiry INTEGER, lastAccessed INTEGER, isSecure INTEGER, isHttpOnly INTEGER);
 
   echo "# Netscape HTTP Cookie File"
-  sqlite3 -separator $'\t' $tmpfile <<-EOF
+  sqlite3 -separator $'\t' "$tmpfile" <<-EOF
     .mode tabs
     .header off
     select host,
@@ -62,4 +62,7 @@ EOF
 
 tmpfile="$(mktemp /tmp/cookies.sqlite.XXXXXXXXXX)"
 curlcookies="$(mktemp /tmp/curlcookies.XXXXXXXXXX)"
-echo $HOME/.mozilla/firefox/*.$profile/cookies.sqlite | { read cookie_file ; extract_cookies "$cookie_file" ; }
+echo "$HOME"/.mozilla/firefox/*."$profile"/cookies.sqlite | {
+  read cookie_file
+  extract_cookies "$cookie_file"
+}
