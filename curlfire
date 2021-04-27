@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -o errexit
 set -o nounset
@@ -22,7 +22,6 @@ for var in "$@"; do
           skip=
     esac;
 done
-
 
 curlcookies="$(mktemp /tmp/curlcookies.XXXXXXXXXX)"
 cookiefire "$profile" > "$curlcookies"
