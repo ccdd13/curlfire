@@ -43,18 +43,18 @@ extract_cookies() {
   # CREATE TABLE moz_cookies (id INTEGER PRIMARY KEY, name TEXT, value TEXT, host TEXT, path TEXT,expiry INTEGER, lastAccessed INTEGER, isSecure INTEGER, isHttpOnly INTEGER);
 
   echo "# Netscape HTTP Cookie File"
-  sqlite3 -separator $'\t' $tmpfile <<- EOF
-  .mode tabs
-  .header off
-  select host,
-  case substr(host,1,1)='.' when 0 then 'FALSE' else 'TRUE' end,
-  path,
-  case isSecure when 0 then 'FALSE' else 'TRUE' end,
-  expiry,
-  name,
-  value
-  from moz_cookies;
-  EOF
+  sqlite3 -separator $'\t' $tmpfile <<-EOF
+    .mode tabs
+    .header off
+    select host,
+    case substr(host,1,1)='.' when 0 then 'FALSE' else 'TRUE' end,
+    path,
+    case isSecure when 0 then 'FALSE' else 'TRUE' end,
+    expiry,
+    name,
+    value
+    from moz_cookies;
+EOF
 
   cleanup
 
