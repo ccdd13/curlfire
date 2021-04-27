@@ -8,21 +8,22 @@ profile=default
 skip=
 args=()
 for var in "$@"; do
-    # Ignore known bad arguments
-    case "$var" in
-        -P)
-            skip=yes
-            ;;
-        *)
-          if [ -z "$skip" ]; then
-              args+=("$var")
-          else
-              profile=$var
-          fi;
-          skip=
-    ;; esac;
+  # Ignore known bad arguments
+  case "$var" in
+    -P)
+      skip=yes
+      ;;
+    *)
+      if [ -z "$skip" ]; then
+        args+=("$var")
+      else
+        profile=$var
+      fi
+      skip=
+      ;;
+  esac
 done
 
 curlcookies="$(mktemp /tmp/curlcookies.XXXXXXXXXX)"
-cookiefire "$profile" > "$curlcookies"
-curl -b "$curlcookies" "${args[@]}" ;
+cookiefire "$profile" >"$curlcookies"
+curl -b "$curlcookies" "${args[@]}"
