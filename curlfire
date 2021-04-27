@@ -20,7 +20,7 @@ for var in "$@"; do
               profile=$var
           fi;
           skip=
-    esac;
+    ;; esac;
 done
 
 curlcookies="$(mktemp /tmp/curlcookies.XXXXXXXXXX)"
